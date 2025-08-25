@@ -4,443 +4,269 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>vk miu miu bel</title>
-
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;600;800&display=swap" rel="stylesheet" />
-
   <style>
     :root{
-      --pink:#ff6b9d;
-      --pink2:#ff1493;
-      --crimson:#dc143c;
-      --bg1:rgba(50, 0, 50, 0.30);
-      --bg2:rgba(100,20, 60, 0.50);
-      --bg3:rgba(150,50,100, 0.70);
-      --max-dom-particles: 40; /* gioi han phan tu DOM dong de giam giat */
+      --pink:#ff6b9d; --pink2:#ff1493; --crimson:#dc143c;
+      --bg1:rgba(50, 0, 50, 0.30); --bg2:rgba(100,20,60, .5); --bg3:rgba(150,50,100,.7);
+      --max-dom-particles: 40;
     }
-
-    *{ box-sizing: border-box; }
-    html,body{ height:100%; }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
     body{
-      margin:0;
-      font-family: "Barlow", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background:#000;
-      color:#fff;
-      overflow:hidden;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      touch-action:manipulation;
+      margin:0; font-family:"Barlow",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:#000; color:#fff; overflow:hidden;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; touch-action:manipulation;
     }
-
-    /* nen radial + hue rotate nhe tay */
-    .sp-container{
-      position:fixed; inset:0; z-index:0;
+    .sp-container{ position:fixed; inset:0; z-index:0;
       background: radial-gradient(var(--bg1), var(--bg2) 35%, var(--bg3));
-      filter: hue-rotate(0deg);
-      animation: hue 16s linear infinite;
-      will-change: filter;
-      contain: paint; /* han che repaint */
+      filter:hue-rotate(0deg); animation:hue 16s linear infinite; will-change:filter; contain:paint;
     }
-    @keyframes hue{ 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+    @keyframes hue{ from{filter:hue-rotate(0)} to{filter:hue-rotate(360deg)} }
+    .sp-content{ position:absolute; inset:0; z-index:2; display:grid; place-items:center; padding:clamp(12px,2vw,24px); pointer-events:none; contain:layout style paint; }
 
-    .sp-content{
-      position:absolute; inset:0; z-index:2;
-      display:grid; place-items:center;
-      padding:clamp(12px,2vw,24px);
-      pointer-events:none;
-      contain: layout style paint;
+    /* cum tieu de */
+    .headline{ display:flex; flex-direction:column; gap:10px; text-align:center; text-transform:uppercase; letter-spacing:.15em; user-select:none; }
+    .line{
+      font-weight:800; font-size:clamp(20px,5vw,42px); opacity:0; transform:translate3d(0,10px,0);
+      animation:fadeUp .8s ease forwards; position:relative; display:inline-block; margin-inline:auto;
     }
+    .line:nth-child(1){ animation-delay:.0s }
+    .line:nth-child(2){ animation-delay:.25s }
+    .line:nth-child(3){ animation-delay:.5s }
+    /* neon shimmer duong ke duoi */
+    .line::after{
+      content:""; position:absolute; left:50%; bottom:-8px; width:0; height:2px; background:linear-gradient(90deg,transparent,#fff,transparent);
+      transform:translateX(-50%); box-shadow:0 0 10px var(--pink);
+      animation:underline 1.2s ease forwards;
+    }
+    .line:nth-child(2)::after{ animation-delay:.4s }
+    .line:nth-child(3)::after{ animation-delay:.7s }
+    @keyframes fadeUp{ to{ opacity:1; transform:translate3d(0,0,0) } }
+    @keyframes underline{ 50%{ width:60% } 100%{ width:0 } }
 
-    /* text frames -> chuyen thanh typewriter + glow nhip tim */
-    .headline{
-      display:flex; flex-direction:column; gap:10px;
-      text-align:center;
-      text-transform:uppercase;
-      letter-spacing: .15em;
-      text-shadow: 0 0 10px rgba(255,255,255,.25);
-      will-change: opacity, transform, text-shadow;
-      backface-visibility:hidden;
-      user-select:none;
-      pointer-events:none;
+    /* per-letter wave + sparkle */
+    .letters{ display:inline-block; }
+    .letters .ch{
+      display:inline-block; opacity:0; transform:translate3d(0,8px,0) rotate(-2deg);
+      animation:popIn .6s ease forwards, wave 2.6s ease-in-out infinite 1.2s;
+      text-shadow:0 0 8px rgba(255,255,255,.2), 0 0 14px rgba(255,255,255,.15);
     }
-    .headline .line{
-      font-weight:800;
-      font-size:clamp(20px, 5vw, 42px);
-      opacity:0;
-      transform: translate3d(0,10px,0);
-      animation: fadeUp .9s ease forwards;
-    }
-    .headline .line:nth-child(1){ animation-delay:.0s; }
-    .headline .line:nth-child(2){ animation-delay:.35s; }
-    .headline .line:nth-child(3){ animation-delay:.7s; }
-    .headline .line:nth-child(4){ animation-delay:1.05s; }
-
-    @keyframes fadeUp{
-      to{ opacity:1; transform: translate3d(0,0,0); }
+    @keyframes popIn{ to{ opacity:1; transform:translate3d(0,0,0) rotate(0) } }
+    @keyframes wave{
+      0%,100%{ transform:translate3d(0,0,0) }
+      50%{ transform:translate3d(0,-6px,0) }
     }
 
+    /* dong chinh doi thanh Luong Hanh Trang */
     .type{
-      font-weight:800;
-      font-size:clamp(24px,6vw,48px);
-      margin-top:8px;
-      position:relative;
-      display:inline-block;
-      white-space:nowrap;
-      overflow:hidden;
-      border-right: .12em solid rgba(255,255,255,.7);
-      animation: typing 3.2s steps(24,end) 1s forwards, caret .9s step-end infinite, glow 2s ease-in-out infinite;
-      letter-spacing:.18em;
+      font-weight:800; font-size:clamp(24px,6vw,48px); margin-top:8px; position:relative; display:inline-block;
+      white-space:nowrap; overflow:hidden; border-right:.12em solid rgba(255,255,255,.7);
+      animation:typing 3s steps(24,end) 1s forwards, caret .9s step-end infinite, glow 2s ease-in-out infinite;
+      letter-spacing:.18em; text-transform:uppercase;
+      background:linear-gradient(90deg,#fff,var(--pink2),#fff); -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter:drop-shadow(0 0 10px rgba(255,105,180,.35));
     }
-    @keyframes typing{ from{ width:0 } to{ width: 100% } }
-    @keyframes caret{ 50%{ border-color: transparent } }
-    @keyframes glow{
-      0%,100%{ text-shadow:0 0 1px #fff, 0 0 6px var(--pink) }
-      50%{ text-shadow:0 0 1px #fff, 0 0 18px var(--pink2) }
-    }
+    @keyframes typing{ from{ width:0 } to{ width:100% } }
+    @keyframes caret{ 50%{ border-color:transparent } }
+    @keyframes glow{ 0%,100%{ text-shadow:0 0 1px #fff,0 0 6px var(--pink) } 50%{ text-shadow:0 0 1px #fff,0 0 18px var(--pink2) } }
 
     /* canvas trai tim */
     canvas#pinkboard{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      z-index:1; display:block;
-      transform: translateZ(0);         /* GPU hint */
-      will-change: transform, opacity;  /* iOS smooth */
-      animation: heartGrow 1.4s ease-out 0.4s both, heartBeat 2.2s ease-in-out infinite 1.8s;
+      position:absolute; inset:0; width:100%; height:100%; z-index:1; display:block;
+      transform:translateZ(0); will-change:transform,opacity;
+      animation:heartGrow 1.4s ease-out .4s both, heartBeat 2.2s ease-in-out infinite 1.8s;
     }
-    @keyframes heartGrow{
-      from{ transform:translateZ(0) scale(.92); opacity:0 }
-      to{   transform:translateZ(0) scale(1);   opacity:1 }
-    }
-    @keyframes heartBeat{
-      0%,100%{ transform:translateZ(0) scale(1) }
-      50%{    transform:translateZ(0) scale(1.045) }
-    }
+    @keyframes heartGrow{ from{ transform:translateZ(0) scale(.92); opacity:0 } to{ transform:translateZ(0) scale(1); opacity:1 } }
+    @keyframes heartBeat{ 0%,100%{ transform:translateZ(0) scale(1) } 50%{ transform:translateZ(0) scale(1.045) } }
 
-    /* tap sparkle (nhe, SVG text) */
-    .click-heart{
-      position:fixed;
-      transform: translate3d(0,0,0);
-      pointer-events:none; z-index:9999;
-      will-change: transform, opacity;
-      animation: clickHeart 900ms ease-out forwards;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
-      font-size:18px;
-    }
-    @keyframes clickHeart{
-      0%{   transform:translate3d(0,0,0) scale(0);   opacity:1 }
-      60%{  transform:translate3d(0,-24px,0) scale(1); opacity:.9 }
-      100%{ transform:translate3d(0,-60px,0) scale(.85); opacity:0 }
-    }
-
-    /* bong bong / sakura / sparkle (class chung .fx) */
-    .fx{ position:fixed; pointer-events:none; z-index:3; will-change: transform, opacity; }
-    .bubble{
-      border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,182,193,.9), rgba(255,105,180,.7) 60%, rgba(255,255,255,.0) 70%);
-      animation: floatUp var(--dur,4s) linear forwards;
-      filter: saturate(1.1);
-    }
-    @keyframes floatUp{
-      from{ transform: translate3d(var(--x,0), 110vh, 0) scale(.7); opacity:0 }
-      10%{ opacity:1 }
-      to{ transform: translate3d(var(--x,0), -8vh, 0) scale(1); opacity:0 }
-    }
-
-    .sakura{
-      width:12px; height:12px;
-      background:#ffb3d9;
-      border-radius: 50% 0 50% 0;
-      opacity:.85;
-      animation: sakuraFall var(--dur,7s) linear forwards;
-      box-shadow: 0 0 8px rgba(255,179,217,.4);
-    }
-    @keyframes sakuraFall{
-      from{ transform: translate3d(var(--x,0), -10vh, 0) rotate(0deg); opacity:1 }
-      to{   transform: translate3d(calc(var(--x,0) + 10vw), 110vh, 0) rotate(360deg); opacity:0 }
-    }
-
+    /* particle DOM nhe */
+    .fx{ position:fixed; pointer-events:none; z-index:3; will-change:transform,opacity }
     .sparkle{
       width:6px; height:6px; background:white; border-radius:50%;
-      box-shadow: 0 0 6px #fff, 0 0 12px #fff, 0 0 16px var(--pink);
-      animation: sparkleShine var(--dur,2.6s) ease-in-out forwards;
+      box-shadow:0 0 6px #fff, 0 0 12px #fff, 0 0 16px var(--pink);
+      animation:sparkleShine var(--dur,2.6s) ease-in-out forwards;
     }
-    @keyframes sparkleShine{
-      0%,100%{ opacity:0; transform:translate3d(0,0,0) scale(0) }
-      50%{ opacity:1; transform:translate3d(0,0,0) scale(1) }
+    @keyframes sparkleShine{ 0%,100%{ opacity:0; transform:translate3d(0,0,0) scale(0) } 50%{ opacity:1; transform:translate3d(0,0,0) scale(1) } }
+    .click-heart{ position:fixed; transform:translate3d(0,0,0); pointer-events:none; z-index:9999;
+      will-change:transform,opacity; animation:clickHeart 900ms ease-out forwards; filter:drop-shadow(0 2px 6px rgba(0,0,0,.25)); font-size:18px;
     }
+    @keyframes clickHeart{ 0%{ transform:translate3d(0,0,0) scale(0); opacity:1 } 60%{ transform:translate3d(0,-24px,0) scale(1); opacity:.9 } 100%{ transform:translate3d(0,-60px,0) scale(.85); opacity:0 } }
 
-    /* nut eco mode */
-    .eco{
-      position:fixed; right:12px; top:12px; z-index:10;
-      padding:10px 14px; border-radius:999px;
-      background:linear-gradient(45deg,#2b2b2b,#1b1b1b);
-      color:#fff; font-weight:600; letter-spacing:.03em;
-      border:1px solid rgba(255,255,255,.15);
-      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.06);
-      cursor:pointer; user-select:none; pointer-events:auto;
-      transform: translateZ(0);
+    .eco{ position:fixed; right:12px; top:12px; z-index:10; padding:10px 14px; border-radius:999px;
+      background:linear-gradient(45deg,#2b2b2b,#1b1b1b); color:#fff; font-weight:600; letter-spacing:.03em;
+      border:1px solid rgba(255,255,255,.15); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.06);
+      cursor:pointer; user-select:none; pointer-events:auto; transform:translateZ(0);
     }
-    .eco.active{ background:linear-gradient(45deg,#1d2a1d,#142214); }
+    .eco.active{ background:linear-gradient(45deg,#1d2a1d,#142214) }
 
-    /* iOS tweaks */
-    @supports (-webkit-touch-callout: none) {
-      canvas#pinkboard{ transform: translate3d(0,0,0); }
-      .click-heart{ transform: translate3d(0,0,0); }
-    }
-
-    /* giam chuyen dong neu nguoi dung chon */
-    @media (prefers-reduced-motion: reduce){
-      .sp-container, .type, canvas#pinkboard, .bubble, .sakura, .sparkle{
-        animation-duration:.001s !important;
-        animation-iteration-count:1 !important;
-      }
+    @supports (-webkit-touch-callout:none){ canvas#pinkboard, .click-heart{ transform:translate3d(0,0,0) } }
+    @media (prefers-reduced-motion:reduce){
+      .sp-container,.type,canvas#pinkboard,.sparkle{ animation-duration:.001s !important; animation-iteration-count:1 !important }
     }
   </style>
 </head>
 <body>
   <div class="sp-container" aria-hidden="true"></div>
-
   <button class="eco" id="ecoBtn" type="button" aria-pressed="false">Eco mode</button>
 
   <div class="sp-content">
-    <div class="headline">
-      <div class="line">Gui Em</div>
-      <div class="line">VK Miu Miu Bel</div>
-      <div class="line">Yeu Be</div>
-      <div class="type">Mai Mai &hearts;</div>
+    <div class="headline" id="headline">
+      <!-- 3 dong se duoc boi ky tu bang JS de co wave -->
+      <div class="line letters" data-text="Gui Em"></div>
+      <div class="line letters" data-text="VK Miu Miu Bel"></div>
+      <div class="line letters" data-text="Yeu Be"></div>
+
+      <!-- doi thanh Luong Hanh Trang -->
+      <div class="type" id="mainLine">Luong Hanh Trang</div>
     </div>
   </div>
 
   <canvas id="pinkboard" aria-label="Heart animation"></canvas>
 
   <script>
-    // ===== Helper: perf / env =====
+    // ===== env =====
     const isIOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
     const mediaReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ===== Click hearts (tap sparkle) - passive listener =====
+    // ===== per-letter builder + wave offset =====
+    function buildLetters(el){
+      const text = el.getAttribute('data-text') || "";
+      el.innerHTML = "";
+      const frag = document.createDocumentFragment();
+      for(let i=0;i<text.length;i++){
+        const span = document.createElement('span');
+        span.className = 'ch';
+        span.textContent = text[i];
+        // delay xuat hien cach deu + do cao wave lech pha
+        span.style.animationDelay = `${0.05*i + 0.2}s`;
+        span.style.setProperty('--wave', `${(i%8)*0.06}s`);
+        span.style.animationDelay = `${0.05*i + 0.2}s, ${1 + (i%8)*0.08}s`;
+        frag.appendChild(span);
+      }
+      el.appendChild(frag);
+    }
+    document.querySelectorAll('.letters').forEach(buildLetters);
+
+    // ===== click hearts + sparkle =====
     const emojis = ["💖","💕","💗","💓","💘"];
     const activeDom = new Set();
+    const MAX_DOM = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-dom-particles')) || 40;
 
     function spawnClickHeart(x,y){
-      if(activeDom.size >= parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-dom-particles'))) return;
+      if(activeDom.size >= MAX_DOM) return;
       const el = document.createElement('div');
-      el.className = "click-heart fx";
+      el.className = "click-heart";
       el.textContent = emojis[(Math.random()*emojis.length)|0];
       el.style.left = (x-10) + "px";
       el.style.top  = (y-10) + "px";
-      el.style.fontSize = (Math.random()*10+18) + "px";
       el.style.color = `hsl(${Math.random()*60+300} 70% 60%)`;
+      el.style.fontSize = (Math.random()*10+18) + "px";
       activeDom.add(el);
       document.body.appendChild(el);
       el.addEventListener("animationend", ()=>{ el.remove(); activeDom.delete(el); }, {once:true});
     }
-    // passive for scroll/touch smoothness on iOS
-    window.addEventListener('click', (e)=> spawnClickHeart(e.clientX, e.clientY), {passive:true});
-    window.addEventListener('touchstart', (e)=>{
-      const t = e.touches[0];
-      spawnClickHeart(t.clientX, t.clientY);
-    }, {passive:true});
-
-    // ===== FX scheduler: 1 loop rAF thay cho nhieu setInterval =====
-    let eco = false;
-    const ecoBtn = document.getElementById('ecoBtn');
-    ecoBtn.addEventListener('click', ()=>{
-      eco = !eco;
-      ecoBtn.classList.toggle('active', eco);
-      ecoBtn.setAttribute('aria-pressed', String(eco));
-    });
-
-    const fxPlan = [];
-    function scheduleFx(kind, everyMs){
-      fxPlan.push({kind, everyMs, t: performance.now() + Math.random()*everyMs});
-    }
-    // it nhan su kien hon tren iPhone, giam dot bien DOM
-    scheduleFx('bubble', isIOS ? 1600 : 1100);
-    scheduleFx('sakura', isIOS ? 2400 : 1800);
-    scheduleFx('sparkle', isIOS ? 1400 : 900);
-
-    function spawn(kind){
-      if(activeDom.size >= (eco ? 14 : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-dom-particles')))) return;
+    function spawnSparkle(){
+      if(activeDom.size >= MAX_DOM) return;
       const el = document.createElement('div');
-      el.classList.add('fx');
-      const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-
-      if(kind==='bubble'){
-        el.classList.add('bubble');
-        const size = (Math.random()*24 + 18) * (eco?0.7:1);
-        el.style.width = el.style.height = size + "px";
-        el.style.left = Math.random()*100 + "vw";
-        el.style.setProperty('--x', (Math.random()*20-10) + "vw");
-        el.style.setProperty('--dur', (Math.random()*2+ (eco?3.2:4.0)) + "s");
-      }else if(kind==='sakura'){
-        el.classList.add('sakura');
-        el.style.left = Math.random()*100 + "vw";
-        el.style.setProperty('--x', (Math.random()*20-10) + "vw");
-        el.style.setProperty('--dur', (Math.random()*3 + (eco?5.5:7)) + "s");
-      }else{
-        el.classList.add('sparkle');
-        el.style.left = Math.random()*100 + "vw";
-        el.style.top  = Math.random()*100 + "vh";
-        el.style.setProperty('--dur', (Math.random()*1.6 + (eco?1.6:2.6)) + "s");
-      }
+      el.className = 'sparkle fx';
+      el.style.left = Math.random()*100 + "vw";
+      el.style.top  = Math.random()*100 + "vh";
+      el.style.setProperty('--dur', (Math.random()*1.6 + 2.0) + "s");
       activeDom.add(el);
       document.body.appendChild(el);
       el.addEventListener('animationend', ()=>{ el.remove(); activeDom.delete(el); }, {once:true});
     }
+    window.addEventListener('click', (e)=> spawnClickHeart(e.clientX, e.clientY), {passive:true});
+    window.addEventListener('touchstart', (e)=>{ const t=e.touches[0]; spawnClickHeart(t.clientX,t.clientY); }, {passive:true});
 
-    let last = performance.now();
+    // Eco mode
+    let eco=false; const ecoBtn=document.getElementById('ecoBtn');
+    ecoBtn.addEventListener('click', ()=>{ eco=!eco; ecoBtn.classList.toggle('active',eco); ecoBtn.setAttribute('aria-pressed', String(eco)); });
+
+    // scheduler rAF (gop lai de mem iPhone)
+    const plan=[{every:isIOS?1400:900, t:performance.now()+500}];
     function loop(now){
-      // pause khi tab an (tiet kiem pin, giam giat)
       if(document.hidden){ requestAnimationFrame(loop); return; }
-
-      for(const s of fxPlan){
-        if(now >= s.t){
-          if(!mediaReduced) spawn(s.kind);
-          // thua so random nhe tay
-          s.t = now + s.everyMs + Math.random()*300;
+      for(const p of plan){
+        if(now>=p.t && !mediaReduced){
+          if(!eco) spawnSparkle();
+          p.t = now + p.every + Math.random()*300;
         }
       }
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
 
-    // ===== Canvas trai tim (toi uu retina + iOS) =====
+    // ===== Canvas heart (toi uu iOS) =====
     (function(canvas){
-      const ctx = canvas.getContext('2d',{ alpha:true, desynchronized:true }); // desync = iOS smoother
-      let DPR = Math.min(window.devicePixelRatio || 1, 1.6); // clamp DPR de giam tai
-      const settings = {
-        length: isIOS ? 1200 : 1800,   // giam so hat tren iOS
-        duration: 1.8,
-        velocity: 120,
-        effect: -1.15,
-        size: 16
-      };
+      const ctx = canvas.getContext('2d',{ alpha:true, desynchronized:true });
+      let DPR = Math.min(window.devicePixelRatio || 1, 1.6);
+      const settings = { length:isIOS?1200:1800, duration:1.8, velocity:120, effect:-1.15, size:16 };
 
-      function Point(x=0, y=0){ this.x=x; this.y=y; }
+      function Point(x=0,y=0){ this.x=x; this.y=y; }
       Point.prototype.clone=function(){ return new Point(this.x,this.y); };
-      Point.prototype.length=function(l){
-        if(l===undefined) return Math.hypot(this.x,this.y);
-        const n = this.length(); this.x=this.x/n*l; this.y=this.y/n*l; return this;
-      };
+      Point.prototype.length=function(l){ if(l===undefined) return Math.hypot(this.x,this.y); const n=this.length(); this.x=this.x/n*l; this.y=this.y/n*l; return this; };
 
-      function Particle(){
-        this.p = new Point(); this.v = new Point(); this.a = new Point(); this.age=0;
-      }
-      Particle.prototype.init=function(x,y,dx,dy){
-        this.p.x=x; this.p.y=y; this.v.x=dx; this.v.y=dy;
-        this.a.x=dx*settings.effect; this.a.y=dy*settings.effect; this.age=0;
-      };
-      Particle.prototype.update=function(dt){
-        this.p.x += this.v.x*dt; this.p.y += this.v.y*dt;
-        this.v.x += this.a.x*dt; this.v.y += this.a.y*dt;
-        this.age += dt;
-      };
-      Particle.prototype.draw=function(ctx,img){
-        const t = Math.min(1, this.age/settings.duration);
-        const ease = (tt)=>{ tt--; return tt*tt*tt+1; };
-        const size = img.width * ease(t);
-        ctx.globalAlpha = 1 - t;
-        ctx.drawImage(img, this.p.x - size/2, this.p.y - size/2, size, size);
-      };
+      function Particle(){ this.p=new Point(); this.v=new Point(); this.a=new Point(); this.age=0; }
+      Particle.prototype.init=function(x,y,dx,dy){ this.p.x=x; this.p.y=y; this.v.x=dx; this.v.y=dy; this.a.x=dx*settings.effect; this.a.y=dy*settings.effect; this.age=0; };
+      Particle.prototype.update=function(dt){ this.p.x+=this.v.x*dt; this.p.y+=this.v.y*dt; this.v.x+=this.a.x*dt; this.v.y+=this.a.y*dt; this.age+=dt; };
+      Particle.prototype.draw=function(ctx,img){ const t=Math.min(1,this.age/settings.duration); const ease=(tt)=>{tt--;return tt*tt*tt+1}; const size=img.width*ease(t); ctx.globalAlpha=1-t; ctx.drawImage(img,this.p.x-size/2,this.p.y-size/2,size,size); };
 
-      const particles = new Array(settings.length).fill(0).map(()=>new Particle());
+      const particles=new Array(settings.length).fill(0).map(()=>new Particle());
       let firstActive=0, firstFree=0;
-
-      function add(x,y,dx,dy){
-        particles[firstFree].init(x,y,dx,dy);
-        firstFree = (firstFree+1) % particles.length;
-        if(firstFree === firstActive) firstActive = (firstActive+1) % particles.length;
-      }
+      function add(x,y,dx,dy){ particles[firstFree].init(x,y,dx,dy); firstFree=(firstFree+1)%particles.length; if(firstFree===firstActive) firstActive=(firstActive+1)%particles.length; }
       function update(dt){
-        if(firstActive < firstFree){
-          for(let i=firstActive;i<firstFree;i++) particles[i].update(dt);
-        }else{
-          for(let i=firstActive;i<particles.length;i++) particles[i].update(dt);
-          for(let i=0;i<firstFree;i++) particles[i].update(dt);
-        }
-        while(firstActive!==firstFree && particles[firstActive].age >= settings.duration){
-          firstActive = (firstActive+1) % particles.length;
-        }
+        if(firstActive<firstFree){ for(let i=firstActive;i<firstFree;i++) particles[i].update(dt); }
+        else{ for(let i=firstActive;i<particles.length;i++) particles[i].update(dt); for(let i=0;i<firstFree;i++) particles[i].update(dt); }
+        while(firstActive!==firstFree && particles[firstActive].age>=settings.duration){ firstActive=(firstActive+1)%particles.length; }
       }
       function draw(img){
-        if(firstActive < firstFree){
-          for(let i=firstActive;i<firstFree;i++) particles[i].draw(ctx,img);
-        }else{
-          for(let i=firstActive;i<particles.length;i++) particles[i].draw(ctx,img);
-          for(let i=0;i<firstFree;i++) particles[i].draw(ctx,img);
-        }
+        if(firstActive<firstFree){ for(let i=firstActive;i<firstFree;i++) particles[i].draw(ctx,img); }
+        else{ for(let i=firstActive;i<particles.length;i++) particles[i].draw(ctx,img); for(let i=0;i<firstFree;i++) particles[i].draw(ctx,img); }
       }
-
       function pointOnHeart(t){
-        return new Point(
-          160 * Math.sin(t)**3,
-          130 * Math.cos(t) - 50*Math.cos(2*t) - 20*Math.cos(3*t) - 10*Math.cos(4*t) + 25
-        );
+        return new Point(160*Math.sin(t)**3, 130*Math.cos(t)-50*Math.cos(2*t)-20*Math.cos(3*t)-10*Math.cos(4*t)+25);
       }
-
       const particleRate = settings.length / settings.duration;
 
-      // particle image
       const img = (()=>{
-        const c = document.createElement('canvas');
-        const cx = c.getContext('2d');
-        c.width = settings.size;
-        c.height = settings.size;
-
-        function to(t){
-          const pt = pointOnHeart(t);
-          pt.x = c.width/3 + pt.x * c.width/550;
-          pt.y = c.height/3 - pt.y * c.height/550;
-          return pt;
-        }
-        cx.beginPath();
-        let t = -Math.PI, p = to(t);
-        cx.moveTo(p.x, p.y);
-        while(t < Math.PI){ t += 0.01; p = to(t); cx.lineTo(p.x, p.y); }
-        cx.closePath();
-        const g = cx.createRadialGradient(c.width/2,c.height/2,0, c.width/2,c.height/2, c.width/2);
-        g.addColorStop(0,'#ff69b4'); g.addColorStop(0.5,'#ff1493'); g.addColorStop(1,'#dc143c');
-        cx.fillStyle = g; cx.fill();
-        const image = new Image();
-        image.src = c.toDataURL();
-        return image;
+        const c=document.createElement('canvas'), cx=c.getContext('2d');
+        c.width=settings.size; c.height=settings.size;
+        function to(t){ const pt=pointOnHeart(t); pt.x=c.width/3 + pt.x*c.width/550; pt.y=c.height/3 - pt.y*c.height/550; return pt; }
+        cx.beginPath(); let t=-Math.PI, p=to(t); cx.moveTo(p.x,p.y);
+        while(t<Math.PI){ t+=0.01; p=to(t); cx.lineTo(p.x,p.y); }
+        cx.closePath(); const g=cx.createRadialGradient(c.width/2,c.height/2,0,c.width/2,c.height/2,c.width/2);
+        g.addColorStop(0,'#ff69b4'); g.addColorStop(0.5,'#ff1493'); g.addColorStop(1,'#dc143c'); cx.fillStyle=g; cx.fill();
+        const image=new Image(); image.src=c.toDataURL(); return image;
       })();
 
-      let time = performance.now();
-
+      let time=performance.now();
       function resize(){
-        DPR = Math.min(window.devicePixelRatio || 1, 1.6);
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-        canvas.width  = Math.floor(w * DPR);
-        canvas.height = Math.floor(h * DPR);
-        ctx.setTransform(DPR,0,0,DPR,0,0); // scale de ve dung ty le
+        DPR=Math.min(window.devicePixelRatio||1,1.6);
+        const w=canvas.clientWidth, h=canvas.clientHeight;
+        canvas.width=Math.floor(w*DPR); canvas.height=Math.floor(h*DPR);
+        ctx.setTransform(DPR,0,0,DPR,0,0);
       }
-      const onResize = ()=>{ resize(); };
-      window.addEventListener('resize', onResize, {passive:true});
-      resize();
+      window.addEventListener('resize', ()=>resize(), {passive:true}); resize();
 
       function render(now){
-        if(document.hidden){ requestAnimationFrame(render); return; } // pause khi tab an
-        const dt = Math.min(0.05, (now - time)/1000); // clamp dt
-        time = now;
-        // clear
-        ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
-
-        // tao hat
-        const amount = particleRate * dt * (eco ? 0.6 : 1);
+        if(document.hidden){ requestAnimationFrame(render); return; }
+        const dt=Math.min(0.05,(now-time)/1000); time=now;
+        ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+        const amount = particleRate * dt * (eco?0.6:1);
         for(let i=0;i<amount;i++){
-          const pos = pointOnHeart(Math.PI - 2*Math.PI*Math.random());
-          const dir = pos.clone().length(settings.velocity);
+          const pos=pointOnHeart(Math.PI - 2*Math.PI*Math.random());
+          const dir=pos.clone().length(settings.velocity);
           add(canvas.clientWidth/2 + pos.x, canvas.clientHeight/2 - pos.y, dir.x, -dir.y);
         }
-        update(dt);
-        draw(img);
-        requestAnimationFrame(render);
+        update(dt); draw(img); requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
     })(document.getElementById('pinkboard'));
+
+    // nho tao them sparkle nhe nhe
+    setTimeout(()=>{ for(let i=0;i<6;i++) spawnSparkle(); }, 1200);
   </script>
 </body>
 </html>
