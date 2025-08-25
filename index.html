@@ -15,6 +15,7 @@
             overflow: hidden;
             background: linear-gradient(45deg, #0a0a0a, #1a0a0a, #2a0a0a);
             font-family: 'Georgia', serif;
+            height: 100vh;
         }
         
         canvas {
@@ -97,32 +98,12 @@
             animation: fadeInOut 4s infinite;
             z-index: 100;
             text-shadow: 0 0 10px #ff69b4;
+            max-width: 90%;
         }
         
         @keyframes fadeInOut {
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
-        }
-        
-        .music-control {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 105, 180, 0.3);
-            border: 2px solid #ff69b4;
-            color: #ff69b4;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-        
-        .music-control:hover {
-            background: rgba(255, 105, 180, 0.5);
-            transform: scale(1.1);
-            box-shadow: 0 0 20px #ff69b4;
         }
         
         .sparkle {
@@ -139,6 +120,117 @@
             50% { opacity: 1; transform: scale(1); }
         }
         
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(45deg, #fff, #ff69b4);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff;
+        }
+        
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(300px) translateY(300px);
+                opacity: 0;
+            }
+        }
+        
+        .rose-petal {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(ellipse at center, #ff69b4, #ff1493);
+            border-radius: 50% 0 50% 0;
+            animation: fall 8s infinite linear;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .love-quotes {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffb6c1;
+            font-size: 1.2rem;
+            text-align: center;
+            font-style: italic;
+            opacity: 0;
+            animation: quoteRotate 15s infinite;
+            z-index: 100;
+            max-width: 80%;
+        }
+        
+        @keyframes quoteRotate {
+            0%, 20% { opacity: 0; }
+            25%, 35% { opacity: 1; }
+            40%, 100% { opacity: 0; }
+        }
+        
+        .aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 0, 150, 0.1) 0%,
+                rgba(255, 105, 180, 0.05) 25%,
+                rgba(138, 43, 226, 0.1) 50%,
+                rgba(255, 105, 180, 0.05) 75%,
+                rgba(255, 0, 150, 0.1) 100%
+            );
+            animation: aurora 10s infinite alternate;
+            pointer-events: none;
+        }
+        
+        @keyframes aurora {
+            0% { opacity: 0.3; transform: rotate(0deg) scale(1); }
+            100% { opacity: 0.7; transform: rotate(2deg) scale(1.02); }
+        }
+        
+        .constellation {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #fff;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
         @media (max-width: 768px) {
             .love-text {
                 font-size: 2.5rem;
@@ -148,10 +240,15 @@
                 font-size: 1.2rem;
                 bottom: 20%;
             }
+            .love-quotes {
+                font-size: 1rem;
+                top: 65%;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="aurora"></div>
     <canvas id="heart"></canvas>
     
     <div class="love-text">vk miu miu bel</div>
@@ -162,14 +259,12 @@
         Mỗi nhịp đập là một lời yêu thương dành cho em ❤️
     </div>
     
-    <div class="music-control" onclick="toggleMusic()">🎵 Nhạc</div>
-    
-    <audio id="backgroundMusic" loop>
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
-    </audio>
+    <div class="love-quotes">
+        <div class="quote">Em là ánh sao sáng nhất trong bầu trời của anh</div>
+    </div>
 
     <script>
-        // Heart animation code (from original script.js)
+        // Optimized heart animation for mobile
         window.requestAnimationFrame = window.__requestAnimationFrame || window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || (function () {
             return function (callback, element) {
                 var lastTime = element.__lastTime;
@@ -190,12 +285,19 @@
             if (loaded) return;
             loaded = true;
             var mobile = window.isDevice;
-            var koef = mobile ? 0.5 : 1;
+            var koef = mobile ? 0.3 : 0.8; // Reduced for better mobile performance
             var canvas = document.getElementById('heart');
             var ctx = canvas.getContext('2d');
             var width = canvas.width = koef * innerWidth;
             var height = canvas.height = koef * innerHeight;
             var rand = Math.random;
+            
+            // Improve canvas performance on mobile
+            if (mobile) {
+                canvas.style.imageRendering = 'pixelated';
+                ctx.imageSmoothingEnabled = false;
+            }
+            
             ctx.fillStyle = "rgba(0,0,0,1)";
             ctx.fillRect(0, 0, width, height);
 
@@ -214,13 +316,18 @@
                 ctx.fillRect(0, 0, width, height);
             });
 
-            var traceCount = mobile ? 20 : 50;
+            var traceCount = mobile ? 10 : 30; // Reduced trace count for mobile
             var pointsOrigin = [];
             var i;
-            var dr = mobile ? 0.3 : 0.1;
-            for (i = 0; i < Math.PI * 2; i += dr) pointsOrigin.push(scaleAndTranslate(heartPosition(i), 210, 13, 0, 0));
-            for (i = 0; i < Math.PI * 2; i += dr) pointsOrigin.push(scaleAndTranslate(heartPosition(i), 150, 9, 0, 0));
-            for (i = 0; i < Math.PI * 2; i += dr) pointsOrigin.push(scaleAndTranslate(heartPosition(i), 90, 5, 0, 0));
+            var dr = mobile ? 0.5 : 0.15; // Larger step for mobile
+            
+            // Create multiple heart layers with different sizes
+            for (i = 0; i < Math.PI * 2; i += dr) pointsOrigin.push(scaleAndTranslate(heartPosition(i), mobile ? 150 : 210, mobile ? 8 : 13, 0, 0));
+            for (i = 0; i < Math.PI * 2; i += dr) pointsOrigin.push(scaleAndTranslate(heartPosition(i), mobile ? 100 : 150, mobile ? 6 : 9, 0, 0));
+            if (!mobile) {
+                for (i = 0; i < Math.PI * 2; i += dr) pointsOrigin.push(scaleAndTranslate(heartPosition(i), 90, 5, 0, 0));
+            }
+            
             var heartPointsCount = pointsOrigin.length;
 
             var targetPoints = [];
@@ -233,18 +340,20 @@
             };
 
             var e = [];
-            for (i = 0; i < heartPointsCount; i++) {
+            var particleCount = mobile ? Math.min(heartPointsCount, 100) : heartPointsCount; // Limit particles on mobile
+            
+            for (i = 0; i < particleCount; i++) {
                 var x = rand() * width;
                 var y = rand() * height;
                 e[i] = {
                     vx: 0,
                     vy: 0,
-                    R: 2,
-                    speed: rand() + 5,
+                    R: mobile ? 1 : 2,
+                    speed: rand() + (mobile ? 3 : 5),
                     q: ~~(rand() * heartPointsCount),
                     D: 2 * (i % 2) - 1,
                     force: 0.2 * rand() + 0.7,
-                    f: "hsla(" + ~~(360 * rand()) + "," + ~~(40 * rand() + 60) + "%," + ~~(60 * rand() + 20) + "%,.3)",
+                    f: "hsla(" + (Math.random() > 0.7 ? 0 : 300 + Math.random() * 60) + "," + ~~(40 * rand() + 60) + "%," + ~~(60 * rand() + 20) + "%,.4)",
                     trace: []
                 };
                 for (var k = 0; k < traceCount; k++) e[i].trace[k] = {x: x, y: y};
@@ -252,11 +361,19 @@
 
             var config = {
                 traceK: 0.4,
-                timeDelta: 0.01
+                timeDelta: mobile ? 0.02 : 0.01 // Slower animation on mobile
             };
 
             var time = 0;
+            var frameCount = 0;
             var loop = function () {
+                frameCount++;
+                // Skip frames on mobile for better performance
+                if (mobile && frameCount % 2 === 0) {
+                    window.requestAnimationFrame(loop, canvas);
+                    return;
+                }
+                
                 var n = -Math.cos(time);
                 pulse((1 + n) * .5, (1 + n) * .5);
                 time += ((Math.sin(time)) < 0 ? 9 : (n > 0.8) ? .2 : 1) * config.timeDelta;
@@ -297,7 +414,7 @@
                     }
                     ctx.fillStyle = u.f;
                     for (k = 0; k < u.trace.length; k++) {
-                        ctx.fillRect(u.trace[k].x, u.trace[k].y, 1, 1);
+                        ctx.fillRect(u.trace[k].x, u.trace[k].y, mobile ? 2 : 1, mobile ? 2 : 1);
                     }
                 }
                 window.requestAnimationFrame(loop, canvas);
@@ -309,10 +426,27 @@
         if (s === 'complete' || s === 'loaded' || s === 'interactive') init();
         else document.addEventListener('DOMContentLoaded', init, false);
 
-        // Additional romantic features
+        // Love quotes rotation
+        const quotes = [
+            "Em là ánh sao sáng nhất trong bầu trời của anh",
+            "Yêu em không chỉ bằng trái tim mà bằng cả tâm hồn",
+            "Em là lý do anh tin vào tình yêu đích thực",
+            "Mỗi ngày bên em đều là một món quà tuyệt vời",
+            "Em làm cho thế giới của anh trở nên hoàn hảo"
+        ];
+        
+        let quoteIndex = 0;
+        const quoteElement = document.querySelector('.quote');
+        
+        setInterval(() => {
+            quoteIndex = (quoteIndex + 1) % quotes.length;
+            quoteElement.textContent = quotes[quoteIndex];
+        }, 15000);
+
+        // Enhanced floating hearts
         function createFloatingHearts() {
             const heartsContainer = document.querySelector('.floating-hearts');
-            const hearts = ['💖', '💕', '💗', '💓', '💝', '💖', '❤️', '💜'];
+            const hearts = ['💖', '💕', '💗', '💓', '💝', '💖', '❤️', '💜', '🌹'];
             
             setInterval(() => {
                 const heart = document.createElement('div');
@@ -321,14 +455,16 @@
                 heart.style.left = Math.random() * 100 + '%';
                 heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
                 heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                heart.style.animationDelay = Math.random() * 2 + 's';
                 heartsContainer.appendChild(heart);
                 
                 setTimeout(() => {
-                    heart.remove();
-                }, 6000);
-            }, 800);
+                    if (heart.parentNode) heart.remove();
+                }, 8000);
+            }, 1200);
         }
 
+        // Sparkle effects
         function createSparkles() {
             setInterval(() => {
                 const sparkle = document.createElement('div');
@@ -339,64 +475,68 @@
                 document.body.appendChild(sparkle);
                 
                 setTimeout(() => {
-                    sparkle.remove();
-                }, 2000);
-            }, 300);
+                    if (sparkle.parentNode) sparkle.remove();
+                }, 3000);
+            }, 500);
         }
 
-        function toggleMusic() {
-            const audio = document.getElementById('backgroundMusic');
-            const button = document.querySelector('.music-control');
+        // Shooting stars
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.left = Math.random() * (window.innerWidth - 300) + 'px';
+            star.style.top = Math.random() * (window.innerHeight - 300) + 'px';
+            star.style.animation = `shoot ${2 + Math.random() * 2}s linear`;
+            document.body.appendChild(star);
             
-            if (audio.paused) {
-                // Tạo âm thanh đơn giản bằng Web Audio API
-                try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-                    
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 1);
-                    
-                    button.innerHTML = '🎵 Đang phát';
-                    button.style.background = 'rgba(255, 105, 180, 0.7)';
-                } catch (e) {
-                    console.log('Không thể phát nhạc');
-                }
-            } else {
-                button.innerHTML = '🎵 Nhạc';
-                button.style.background = 'rgba(255, 105, 180, 0.3)';
+            setTimeout(() => {
+                if (star.parentNode) star.remove();
+            }, 4000);
+        }
+
+        // Rose petals
+        function createRosePetal() {
+            const petal = document.createElement('div');
+            petal.className = 'rose-petal';
+            petal.style.left = Math.random() * 100 + '%';
+            petal.style.animationDuration = (6 + Math.random() * 4) + 's';
+            petal.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(petal);
+            
+            setTimeout(() => {
+                if (petal.parentNode) petal.remove();
+            }, 10000);
+        }
+
+        // Create constellation
+        function createConstellation() {
+            const numStars = 20;
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'constellation';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (2 + Math.random() * 2) + 's';
+                document.body.appendChild(star);
             }
         }
 
-        // Initialize romantic effects
-        setTimeout(() => {
-            createFloatingHearts();
-            createSparkles();
-        }, 1000);
-
-        // Click anywhere to create heart burst effect
+        // Click effect - heart explosion
         document.addEventListener('click', function(e) {
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 12; i++) {
                 const heart = document.createElement('div');
-                heart.innerHTML = '💖';
+                heart.innerHTML = ['💖', '💕', '💗', '💓'][Math.floor(Math.random() * 4)];
                 heart.style.position = 'absolute';
                 heart.style.left = e.clientX + 'px';
                 heart.style.top = e.clientY + 'px';
                 heart.style.pointerEvents = 'none';
                 heart.style.color = '#ff69b4';
-                heart.style.fontSize = '1.5rem';
+                heart.style.fontSize = (1 + Math.random()) + 'rem';
                 heart.style.zIndex = '200';
                 
-                const angle = (i / 8) * 2 * Math.PI;
-                const velocity = 100;
+                const angle = (i / 12) * 2 * Math.PI;
+                const velocity = 50 + Math.random() * 100;
                 const vx = Math.cos(angle) * velocity;
                 const vy = Math.sin(angle) * velocity;
                 
@@ -405,26 +545,50 @@
                 let posX = e.clientX;
                 let posY = e.clientY;
                 let opacity = 1;
+                let scale = 1;
                 
                 const animate = () => {
                     posX += vx * 0.02;
-                    posY += vy * 0.02;
-                    opacity -= 0.02;
+                    posY += vy * 0.02 + 2; // gravity
+                    opacity -= 0.015;
+                    scale += 0.01;
                     
                     heart.style.left = posX + 'px';
                     heart.style.top = posY + 'px';
                     heart.style.opacity = opacity;
+                    heart.style.transform = `scale(${scale})`;
                     
-                    if (opacity > 0) {
+                    if (opacity > 0 && posY < window.innerHeight + 50) {
                         requestAnimationFrame(animate);
                     } else {
-                        heart.remove();
+                        if (heart.parentNode) heart.remove();
                     }
                 };
                 
                 animate();
             }
         });
+
+        // Initialize all effects
+        setTimeout(() => {
+            createFloatingHearts();
+            createSparkles();
+            createConstellation();
+            
+            // Random shooting stars
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    createShootingStar();
+                }
+            }, 3000);
+            
+            // Rose petals
+            setInterval(() => {
+                if (Math.random() > 0.6) {
+                    createRosePetal();
+                }
+            }, 2000);
+        }, 1000);
     </script>
 </body>
 </html>
