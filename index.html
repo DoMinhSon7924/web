@@ -8,8 +8,8 @@
   <style>
     :root{
       --pink:#ff6b9d; --pink2:#ff1493; --crimson:#dc143c;
-      --bg1:rgba(50, 0, 50, 0.30); --bg2:rgba(100,20,60, .5); --bg3:rgba(150,50,100,.7);
-      --max-dom-particles: 40;
+      --bg1:rgba(50, 0, 50, 0.30); --bg2:rgba(100,20,60,.5); --bg3:rgba(150,50,100,.7);
+      --max-dom-particles: 36; /* gioi han DOM fx */
     }
     *{ box-sizing:border-box }
     html,body{ height:100% }
@@ -18,78 +18,70 @@
       background:#000; color:#fff; overflow:hidden;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; touch-action:manipulation;
     }
-    .sp-container{ position:fixed; inset:0; z-index:0;
+
+    /* nen + sao + canvas trai tim + text: tang z-index theo lop */
+    .sp-container{
+      position:fixed; inset:0; z-index:0;
       background: radial-gradient(var(--bg1), var(--bg2) 35%, var(--bg3));
-      filter:hue-rotate(0deg); animation:hue 16s linear infinite; will-change:filter; contain:paint;
+      animation:hue 16s linear infinite; will-change:filter; contain:paint;
     }
     @keyframes hue{ from{filter:hue-rotate(0)} to{filter:hue-rotate(360deg)} }
-    .sp-content{ position:absolute; inset:0; z-index:2; display:grid; place-items:center; padding:clamp(12px,2vw,24px); pointer-events:none; contain:layout style paint; }
 
-    /* cum tieu de */
-    .headline{ display:flex; flex-direction:column; gap:10px; text-align:center; text-transform:uppercase; letter-spacing:.15em; user-select:none; }
-    .line{
-      font-weight:800; font-size:clamp(20px,5vw,42px); opacity:0; transform:translate3d(0,10px,0);
-      animation:fadeUp .8s ease forwards; position:relative; display:inline-block; margin-inline:auto;
+    /* sao lap lanh (canvas rieng) */
+    #starfield{
+      position:fixed; inset:0; z-index:1; display:block; width:100%; height:100%;
+      transform:translateZ(0);
+      will-change: transform, opacity;
     }
-    .line:nth-child(1){ animation-delay:.0s }
-    .line:nth-child(2){ animation-delay:.25s }
-    .line:nth-child(3){ animation-delay:.5s }
-    /* neon shimmer duong ke duoi */
-    .line::after{
-      content:""; position:absolute; left:50%; bottom:-8px; width:0; height:2px; background:linear-gradient(90deg,transparent,#fff,transparent);
-      transform:translateX(-50%); box-shadow:0 0 10px var(--pink);
-      animation:underline 1.2s ease forwards;
-    }
-    .line:nth-child(2)::after{ animation-delay:.4s }
-    .line:nth-child(3)::after{ animation-delay:.7s }
-    @keyframes fadeUp{ to{ opacity:1; transform:translate3d(0,0,0) } }
-    @keyframes underline{ 50%{ width:60% } 100%{ width:0 } }
-
-    /* per-letter wave + sparkle */
-    .letters{ display:inline-block; }
-    .letters .ch{
-      display:inline-block; opacity:0; transform:translate3d(0,8px,0) rotate(-2deg);
-      animation:popIn .6s ease forwards, wave 2.6s ease-in-out infinite 1.2s;
-      text-shadow:0 0 8px rgba(255,255,255,.2), 0 0 14px rgba(255,255,255,.15);
-    }
-    @keyframes popIn{ to{ opacity:1; transform:translate3d(0,0,0) rotate(0) } }
-    @keyframes wave{
-      0%,100%{ transform:translate3d(0,0,0) }
-      50%{ transform:translate3d(0,-6px,0) }
-    }
-
-    /* dong chinh doi thanh Luong Hanh Trang */
-    .type{
-      font-weight:800; font-size:clamp(24px,6vw,48px); margin-top:8px; position:relative; display:inline-block;
-      white-space:nowrap; overflow:hidden; border-right:.12em solid rgba(255,255,255,.7);
-      animation:typing 3s steps(24,end) 1s forwards, caret .9s step-end infinite, glow 2s ease-in-out infinite;
-      letter-spacing:.18em; text-transform:uppercase;
-      background:linear-gradient(90deg,#fff,var(--pink2),#fff); -webkit-background-clip:text; background-clip:text; color:transparent;
-      filter:drop-shadow(0 0 10px rgba(255,105,180,.35));
-    }
-    @keyframes typing{ from{ width:0 } to{ width:100% } }
-    @keyframes caret{ 50%{ border-color:transparent } }
-    @keyframes glow{ 0%,100%{ text-shadow:0 0 1px #fff,0 0 6px var(--pink) } 50%{ text-shadow:0 0 1px #fff,0 0 18px var(--pink2) } }
 
     /* canvas trai tim */
-    canvas#pinkboard{
-      position:absolute; inset:0; width:100%; height:100%; z-index:1; display:block;
-      transform:translateZ(0); will-change:transform,opacity;
+    #pinkboard{
+      position:absolute; inset:0; width:100%; height:100%; z-index:2; display:block;
+      transform:translateZ(0);
+      will-change:transform,opacity;
       animation:heartGrow 1.4s ease-out .4s both, heartBeat 2.2s ease-in-out infinite 1.8s;
     }
     @keyframes heartGrow{ from{ transform:translateZ(0) scale(.92); opacity:0 } to{ transform:translateZ(0) scale(1); opacity:1 } }
     @keyframes heartBeat{ 0%,100%{ transform:translateZ(0) scale(1) } 50%{ transform:translateZ(0) scale(1.045) } }
 
-    /* particle DOM nhe */
-    .fx{ position:fixed; pointer-events:none; z-index:3; will-change:transform,opacity }
-    .sparkle{
-      width:6px; height:6px; background:white; border-radius:50%;
-      box-shadow:0 0 6px #fff, 0 0 12px #fff, 0 0 16px var(--pink);
-      animation:sparkleShine var(--dur,2.6s) ease-in-out forwards;
+    /* cum tieu de 3 dong (giu lai va them hieu ung chu) */
+    .sp-content{ position:absolute; inset:0; z-index:3; display:grid; place-items:center; pointer-events:none; padding:clamp(12px,2vw,24px); }
+    .headline{ display:flex; flex-direction:column; gap:10px; text-align:center; text-transform:uppercase; letter-spacing:.15em; user-select:none; }
+    .line{ font-weight:800; font-size:clamp(20px,5vw,42px); opacity:0; transform:translate3d(0,10px,0);
+      animation:fadeUp .8s ease forwards; position:relative; display:inline-block; margin-inline:auto;
     }
-    @keyframes sparkleShine{ 0%,100%{ opacity:0; transform:translate3d(0,0,0) scale(0) } 50%{ opacity:1; transform:translate3d(0,0,0) scale(1) } }
-    .click-heart{ position:fixed; transform:translate3d(0,0,0); pointer-events:none; z-index:9999;
-      will-change:transform,opacity; animation:clickHeart 900ms ease-out forwards; filter:drop-shadow(0 2px 6px rgba(0,0,0,.25)); font-size:18px;
+    .line:nth-child(1){ animation-delay:.0s }
+    .line:nth-child(2){ animation-delay:.25s }
+    .line:nth-child(3){ animation-delay:.5s }
+    @keyframes fadeUp{ to{ opacity:1; transform:translate3d(0,0,0) } }
+
+    /* neon underline + tia sao nhe */
+    .line::after{
+      content:""; position:absolute; left:50%; bottom:-8px; width:0; height:2px;
+      background:linear-gradient(90deg,transparent,#fff,transparent);
+      transform:translateX(-50%); box-shadow:0 0 10px var(--pink);
+      animation:underline 1.2s ease forwards;
+    }
+    .line:nth-child(2)::after{ animation-delay:.4s }
+    .line:nth-child(3)::after{ animation-delay:.7s }
+    @keyframes underline{ 50%{ width:60% } 100%{ width:0 } }
+
+    /* per-letter wave + shimmer */
+    .letters .ch{
+      display:inline-block; opacity:0; transform:translate3d(0,8px,0) rotate(-2deg);
+      animation:popIn .6s ease forwards, wave 2.6s ease-in-out infinite 1.2s, shimmer 2.4s linear infinite;
+      text-shadow:0 0 8px rgba(255,255,255,.2), 0 0 14px rgba(255,255,255,.15);
+      background:linear-gradient(90deg,#fff,var(--pink2),#fff); -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    @keyframes popIn{ to{ opacity:1; transform:translate3d(0,0,0) rotate(0) } }
+    @keyframes wave{ 0%,100%{ transform:translate3d(0,0,0) } 50%{ transform:translate3d(0,-6px,0) } }
+    @keyframes shimmer{ from{ filter:hue-rotate(0deg) } to{ filter:hue-rotate(360deg) } }
+
+    /* fx DOM nhe */
+    .fx{ position:fixed; pointer-events:none; z-index:4; will-change:transform,opacity }
+    .click-heart{
+      transform:translate3d(0,0,0); animation:clickHeart 900ms ease-out forwards;
+      filter:drop-shadow(0 2px 6px rgba(0,0,0,.25)); font-size:18px;
     }
     @keyframes clickHeart{ 0%{ transform:translate3d(0,0,0) scale(0); opacity:1 } 60%{ transform:translate3d(0,-24px,0) scale(1); opacity:.9 } 100%{ transform:translate3d(0,-60px,0) scale(.85); opacity:0 } }
 
@@ -100,25 +92,25 @@
     }
     .eco.active{ background:linear-gradient(45deg,#1d2a1d,#142214) }
 
-    @supports (-webkit-touch-callout:none){ canvas#pinkboard, .click-heart{ transform:translate3d(0,0,0) } }
+    @supports (-webkit-touch-callout:none){
+      #pinkboard, .click-heart, #starfield{ transform:translate3d(0,0,0) }
+    }
     @media (prefers-reduced-motion:reduce){
-      .sp-container,.type,canvas#pinkboard,.sparkle{ animation-duration:.001s !important; animation-iteration-count:1 !important }
+      .sp-container, #pinkboard{ animation-duration:.001s !important; animation-iteration-count:1 !important }
     }
   </style>
 </head>
 <body>
   <div class="sp-container" aria-hidden="true"></div>
+  <canvas id="starfield" aria-hidden="true"></canvas>
   <button class="eco" id="ecoBtn" type="button" aria-pressed="false">Eco mode</button>
 
   <div class="sp-content">
-    <div class="headline" id="headline">
-      <!-- 3 dong se duoc boi ky tu bang JS de co wave -->
+    <div class="headline">
       <div class="line letters" data-text="Gui Em"></div>
       <div class="line letters" data-text="VK Miu Miu Bel"></div>
-      <div class="line letters" data-text="Yeu Be"></div>
-
-      <!-- doi thanh Luong Hanh Trang -->
-      <div class="type" id="mainLine">Luong Hanh Trang</div>
+      <div class="line letters" data-text="Yeu Be LHT"></div>
+      <!-- Luong Hanh Trang-->
     </div>
   </div>
 
@@ -129,7 +121,7 @@
     const isIOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
     const mediaReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ===== per-letter builder + wave offset =====
+    // ===== build per-letter =====
     function buildLetters(el){
       const text = el.getAttribute('data-text') || "";
       el.innerHTML = "";
@@ -138,25 +130,26 @@
         const span = document.createElement('span');
         span.className = 'ch';
         span.textContent = text[i];
-        // delay xuat hien cach deu + do cao wave lech pha
-        span.style.animationDelay = `${0.05*i + 0.2}s`;
-        span.style.setProperty('--wave', `${(i%8)*0.06}s`);
-        span.style.animationDelay = `${0.05*i + 0.2}s, ${1 + (i%8)*0.08}s`;
+        span.style.animationDelay = `${0.05*i + 0.2}s, ${1 + (i%8)*0.08}s, ${0.6 + i*0.03}s`;
         frag.appendChild(span);
       }
       el.appendChild(frag);
     }
     document.querySelectorAll('.letters').forEach(buildLetters);
 
-    // ===== click hearts + sparkle =====
+    // ===== Eco mode =====
+    let eco=false; const ecoBtn=document.getElementById('ecoBtn');
+    ecoBtn.addEventListener('click', ()=>{ eco=!eco; ecoBtn.classList.toggle('active',eco); ecoBtn.setAttribute('aria-pressed', String(eco)); });
+
+    // ===== Click hearts (tap) =====
     const emojis = ["💖","💕","💗","💓","💘"];
     const activeDom = new Set();
-    const MAX_DOM = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-dom-particles')) || 40;
+    const MAX_DOM = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-dom-particles')) || 36;
 
     function spawnClickHeart(x,y){
       if(activeDom.size >= MAX_DOM) return;
       const el = document.createElement('div');
-      el.className = "click-heart";
+      el.className = "click-heart fx";
       el.textContent = emojis[(Math.random()*emojis.length)|0];
       el.style.left = (x-10) + "px";
       el.style.top  = (y-10) + "px";
@@ -166,40 +159,79 @@
       document.body.appendChild(el);
       el.addEventListener("animationend", ()=>{ el.remove(); activeDom.delete(el); }, {once:true});
     }
-    function spawnSparkle(){
-      if(activeDom.size >= MAX_DOM) return;
-      const el = document.createElement('div');
-      el.className = 'sparkle fx';
-      el.style.left = Math.random()*100 + "vw";
-      el.style.top  = Math.random()*100 + "vh";
-      el.style.setProperty('--dur', (Math.random()*1.6 + 2.0) + "s");
-      activeDom.add(el);
-      document.body.appendChild(el);
-      el.addEventListener('animationend', ()=>{ el.remove(); activeDom.delete(el); }, {once:true});
-    }
     window.addEventListener('click', (e)=> spawnClickHeart(e.clientX, e.clientY), {passive:true});
     window.addEventListener('touchstart', (e)=>{ const t=e.touches[0]; spawnClickHeart(t.clientX,t.clientY); }, {passive:true});
 
-    // Eco mode
-    let eco=false; const ecoBtn=document.getElementById('ecoBtn');
-    ecoBtn.addEventListener('click', ()=>{ eco=!eco; ecoBtn.classList.toggle('active',eco); ecoBtn.setAttribute('aria-pressed', String(eco)); });
-
-    // scheduler rAF (gop lai de mem iPhone)
-    const plan=[{every:isIOS?1400:900, t:performance.now()+500}];
-    function loop(now){
-      if(document.hidden){ requestAnimationFrame(loop); return; }
-      for(const p of plan){
-        if(now>=p.t && !mediaReduced){
-          if(!eco) spawnSparkle();
-          p.t = now + p.every + Math.random()*300;
-        }
-      }
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
-
-    // ===== Canvas heart (toi uu iOS) =====
+    // ===== Starfield (canvas rieng, muot cho iPhone) =====
     (function(canvas){
+      const ctx = canvas.getContext('2d', { alpha:true, desynchronized:true });
+      let DPR = Math.min(window.devicePixelRatio || 1, 1.6);
+      let W=0,H=0;
+
+      const BASE_STARS = isIOS ? 220 : 380;   // nhieu sao hon theo yeu cau
+      let stars = [];
+
+      function rand(a,b){ return a + Math.random()*(b-a); }
+
+      function resize(){
+        DPR = Math.min(window.devicePixelRatio || 1, 1.6);
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        canvas.width = Math.floor(w*DPR);
+        canvas.height = Math.floor(h*DPR);
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+        W = w; H = h;
+        buildStars();
+      }
+
+      function buildStars(){
+        const target = Math.floor((eco ? BASE_STARS*0.55 : BASE_STARS) * (Math.min(W,H)/800 + 0.6));
+        stars = new Array(target).fill(0).map(()=>({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          r: rand(0.4, 1.6),                 // ban kinh nho cho muot
+          a: rand(0.35, 0.9),                 // alpha base
+          tw: rand(0.8, 2.2),                 // toc do twinkle
+          ph: Math.random()*Math.PI*2,        // pha
+          vx: rand(-0.02, 0.02),              // drift cham
+          vy: rand(-0.02, 0.02)
+        }));
+      }
+
+      function render(now){
+        if(document.hidden){ requestAnimationFrame(render); return; }
+        ctx.clearRect(0,0,W,H);
+        const t = now/1000;
+        for(const s of stars){
+          // twinkle
+          const tw = (Math.sin(t*s.tw + s.ph)*0.5 + 0.5); // 0..1
+          const alpha = s.a*0.35 + tw*0.65*s.a;
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r*(1+tw*0.15), 0, Math.PI*2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+
+          // nhe tia sao (glow)
+          ctx.globalAlpha = alpha*0.25;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r*3.2, 0, Math.PI*2);
+          ctx.fill();
+
+          // drift
+          s.x += s.vx; s.y += s.vy;
+          if(s.x< -2) s.x=W+2; if(s.x>W+2) s.x=-2;
+          if(s.y< -2) s.y=H+2; if(s.y>H+2) s.y=-2;
+        }
+        requestAnimationFrame(render);
+      }
+
+      window.addEventListener('resize', resize, {passive:true});
+      resize();
+      requestAnimationFrame(render);
+    })(document.getElementById('starfield'));
+
+    // ===== Heart particles (giu nguyen, da toi uu iOS) =====
+    ;(function(canvas){
       const ctx = canvas.getContext('2d',{ alpha:true, desynchronized:true });
       let DPR = Math.min(window.devicePixelRatio || 1, 1.6);
       const settings = { length:isIOS?1200:1800, duration:1.8, velocity:120, effect:-1.15, size:16 };
@@ -264,9 +296,6 @@
       }
       requestAnimationFrame(render);
     })(document.getElementById('pinkboard'));
-
-    // nho tao them sparkle nhe nhe
-    setTimeout(()=>{ for(let i=0;i<6;i++) spawnSparkle(); }, 1200);
   </script>
 </body>
 </html>
